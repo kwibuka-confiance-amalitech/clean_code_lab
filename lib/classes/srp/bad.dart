@@ -1,20 +1,45 @@
-/// 🧠 Does too much:
-/// 
-/// This function calculates a total, applies a discount, prints a receipt,
-/// and sends a confirmation — all in one place. It's hard to test and reuse.
-void checkout() {
-  var items = [100, 200, 300];
-  var total = items.reduce((a, b) => a + b);
+class UserService {
+  final List<Map<String, String>> _users = [];
 
-  var discount = 0.1;
-  var discountedTotal = total - (total * discount);
+  void registerUser(String name, String email) {
+    // Save to "database"
+    _users.add({'name': name, 'email': email});
 
-  print('Receipt:');
-  for (var price in items) {
-    print('Item: \$${price}');
+    // Send email
+    if (email.contains('@')) {
+      print("Sending welcome email to $email...");
+    } else {
+      print("Invalid email: $email");
+    }
+
+    // Log
+    print("User registered: $email");
   }
-  print('Discount: ${discount * 100}%');
-  print('Total: \$$discountedTotal');
 
-  print('Confirmation email sent.');
+  void handleUser(Map<String, dynamic>? user) {
+    if (user != null) {
+      final profile = user['profile'];
+
+      if (profile != null) {
+        final isActive = profile['isActive'] == true;
+        final email = profile['email'];
+
+        if (isActive && email is String && email.contains('@')) {
+          print("Valid user: $email");
+        } else {
+          print("Invalid profile: inactive or bad email");
+        }
+      } else {
+        print("Missing profile");
+      }
+    } else {
+      print("User is null");
+    }
+  }
+
+  void listUsers() {
+    for (var user in _users) {
+      print("User: ${user['name']} - ${user['email']}");
+    }
+  }
 }
